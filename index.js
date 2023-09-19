@@ -6,11 +6,25 @@ const app = express();
 
 require("dotenv").config();
 
-const PORT = process.env.PORT || 5051;
+// Change this to your desired environment setup
+const PORT = 5051;
+const CORS_ORIGIN = '*';
+
 
 // Middleware
-app.use(cors({origin: process.env.CORS_ORIGIN}));
+app.use(cors());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', CORS_ORIGIN);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
 app.use(express.json());
+
+app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.url}`);
+    next();
+});
 
 const runShellCommand = (commandString) => new Promise((resolve, reject) => {
 
@@ -29,7 +43,7 @@ app.post('/recommend', async (req, res) => {
     
     fs.writeFileSync('script/in/in.json', JSON.stringify(userPreferences));
 
-    const command = 'python3 script/lush.py';
+    const command = 'python3 script/lush.py m';
 
     console.log("Executing Python script");
     runShellCommand(command).then( () => {
@@ -44,7 +58,6 @@ app.post('/recommend', async (req, res) => {
 }
 );
 
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
-server.timeout = 100000;
