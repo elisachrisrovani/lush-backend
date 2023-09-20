@@ -1,5 +1,5 @@
-# Import loibraries
 import os
+# Import loibraries
 import pandas as pd
 import json
 import random
@@ -7,12 +7,14 @@ import sys
 import joblib
 from sklearn.linear_model import LogisticRegression
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
+# Current directory where this script is located
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-input_file_path = os.path.join(script_dir, 'in', 'in.json')
-dataset_file_path = os.path.join(script_dir, 'data', 'dataset.csv')
-output_file_path = os.path.join(script_dir, 'out', 'out.json')
-model_file_path = os.path.join(script_dir, 'data', 'model_pipeline.pkl')
+# Now create the relative paths
+input_file_path = os.path.join(current_dir, 'in', 'in.json')
+output_file_path = os.path.join(current_dir, 'out', 'out.json')
+dataset_file_path = os.path.join(current_dir, 'data', 'dataset.csv')
+model_file_path = os.path.join(current_dir, 'data', 'model_pipeline.pkl')
 
 def rand():
     return random.randint(pd_out.product_id.min(), pd_out.product_id.max())
@@ -68,8 +70,8 @@ else:
             break
     text = 'Predicted using the model'
 
-# Lookup to for predicted value
-pd_out_pred = pd_out[pd_out.product_id.isin(prod_id_pred_lst)]
+# Lookup to for predicted value, drop page url column
+pd_out_pred = pd_out[pd_out.product_id.isin(prod_id_pred_lst)].iloc[:,:-1]
 
 # Convert to json
 file_out_json = pd_out_pred.to_json(orient="records")
@@ -80,3 +82,4 @@ with open(output_file_path, 'w') as f:
     
 # Print the result
 print(text)
+print(file_out_json)
