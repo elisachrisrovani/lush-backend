@@ -38,6 +38,10 @@ const runShellCommand = (commandString) => new Promise((resolve, reject) => {
 });
 
 // Routes
+app.get('/', (req, res) => {
+    res.send('Hello, welcome to LUSH AI API');
+});
+
 app.post('/recommend', async (req, res) => {
     const userPreferences = req.body;
     
